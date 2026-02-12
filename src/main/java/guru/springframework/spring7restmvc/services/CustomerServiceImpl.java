@@ -1,7 +1,6 @@
 package guru.springframework.spring7restmvc.services;
 
 import guru.springframework.spring7restmvc.model.Customer;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -39,6 +38,35 @@ public class CustomerServiceImpl implements CustomerService {
         customerMap.put(customer1.getId(), customer1);
         customerMap.put(customer2.getId(), customer2);
         customerMap.put(customer3.getId(), customer3);
+    }
+
+    @Override
+    public Customer createCustomer(Customer customer) {
+        Customer newCustomer = Customer.builder()
+                .id(UUID.randomUUID())
+                .name(customer.getName())
+                .version(1)
+                .createdDate(Instant.now())
+                .updatedDate(Instant.now())
+                .build();
+        customerMap.put(newCustomer.getId(), newCustomer);
+        return newCustomer;
+    }
+
+    @Override
+    public Customer updateCustomer(UUID customerID, Customer customer) {
+        Customer existingCustomer = getCustomerById(customerID);
+        existingCustomer.setName(customer.getName());
+        existingCustomer.setVersion(existingCustomer.getVersion() + 1);
+        existingCustomer.setUpdatedDate(Instant.now());
+
+        customerMap.put(customerID, existingCustomer);
+        return existingCustomer;
+    }
+
+    @Override
+    public void deleteCustomer(UUID customerID) {
+        customerMap.remove(customerID);
     }
 
     @Override
